@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  # 🔴 CORRECCIÓN 2: Se añade 'packages: write' para permitir la subida a ghcr.io
+  packages: write 
 
 jobs:
   build:
@@ -16,19 +18,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+        
     - name: Install dependencies
-      run: python -m pip install --upgrade pip
-           pip install -r requirements.txt
+      # 🔴 CORRECCIÓN 1: Uso del bloque multi-línea '|' para ejecutar dos comandos separados
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt # Asegúrate de que este archivo existe, si se llama 'requeriment.txt', cámbialo aquí.
 
     - name: 🧪 Run tests
+      # Nota: Pytest ya está en tu lista de requerimientos, por lo que este comando es correcto.
       run: pytest
 
     - name: 🧹 Run lint
-      run: flake8 .
+      # 🔴 CORRECCIÓN 3: Se añade la instalación de flake8 antes de ejecutarlo.
+      run: |
+        pip install flake8
+        flake8 .
 
     - name: 🔐 Login to GitHub Container Registry
       uses: docker/login-action@v3
@@ -40,6 +50,8 @@ jobs:
     - name: 🏗️ Build and push Docker image
       uses: docker/build-push-action@v6
       with:
+        context: . # Aseguramos que el contexto de build es la raíz del repo
         push: true
-        tags: ghcr.io/${{ DKcatotin/Trabajo_python }}:latest
-      
+        # ⚠️ Nota: El repositorio debe ser ${{ github.repository }} para ser genérico.
+        # Si 'DKcatotin/Trabajo_python' es el nombre exacto del repo:
+        tags: ghcr.io/DKcatotin/Trabajo_python:latest
