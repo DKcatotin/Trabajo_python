@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Instalar Flask
-RUN pip install -r requeriments.txt
+RUN pip install -r requirements.txt
 
 # Exponer el puerto donde corre Flask
 EXPOSE 5000
