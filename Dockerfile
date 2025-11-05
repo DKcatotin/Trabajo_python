@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copiar dependencias y código
-COPY app.py /app
+COPY . /app
 
 # Instalar Flask
 RUN pip install -r requeriments.txt
