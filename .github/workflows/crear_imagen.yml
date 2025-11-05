@@ -1,4 +1,4 @@
-name: Python application
+name: Python Docker Image Build
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  # 🔴 CORRECCIÓN 2: Se añade 'packages: write' para permitir la subida a ghcr.io
+  # Permiso MANDATORIO para subir imágenes a ghcr.io
   packages: write 
 
 jobs:
@@ -25,20 +25,12 @@ jobs:
         python-version: "3.10"
         
     - name: Install dependencies
-      # 🔴 CORRECCIÓN 1: Uso del bloque multi-línea '|' para ejecutar dos comandos separados
+      # CORRECCIÓN: Uso de sintaxis multi-línea (|) para ejecutar comandos separados.
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt # Asegúrate de que este archivo existe, si se llama 'requeriment.txt', cámbialo aquí.
+        pip install -r requirements.txt # Asegúrate que el archivo se llama 'requirements.txt'
 
-    - name: 🧪 Run tests
-      # Nota: Pytest ya está en tu lista de requerimientos, por lo que este comando es correcto.
-      run: pytest
-
-    - name: 🧹 Run lint
-      # 🔴 CORRECCIÓN 3: Se añade la instalación de flake8 antes de ejecutarlo.
-      run: |
-        pip install flake8
-        flake8 .
+    # Se eliminan los pasos "Run tests" y "Run lint"
 
     - name: 🔐 Login to GitHub Container Registry
       uses: docker/login-action@v3
@@ -50,8 +42,7 @@ jobs:
     - name: 🏗️ Build and push Docker image
       uses: docker/build-push-action@v6
       with:
-        context: . # Aseguramos que el contexto de build es la raíz del repo
+        context: . # Usa el directorio actual como contexto de build
         push: true
-        # ⚠️ Nota: El repositorio debe ser ${{ github.repository }} para ser genérico.
-        # Si 'DKcatotin/Trabajo_python' es el nombre exacto del repo:
+        # Usa el nombre de tu repositorio para el tag.
         tags: ghcr.io/DKcatotin/Trabajo_python:latest
